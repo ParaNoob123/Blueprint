@@ -13,7 +13,7 @@ cat << "EOF"
  |_| /_/    \_\_|  \_\/_/    \_\
                                 
                                 
- 🤍 Ubuntu Installer In Github - github.com/ParaNoob123
+ 🤍 Debain Installer In Github - github.com/ParaNoob123
 
 EOF
 echo -e "\033[0m"
