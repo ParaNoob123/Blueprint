@@ -18,7 +18,7 @@ cat << "EOF"
 EOF
 echo -e "\033[0m"
 
-echo -e "\033[1;34mStarting Installation of Ubuntu\033[0m"
+echo -e "\033[1;34mStarting Installation of Debain 12\033[0m"
 echo "-------------------------------------"
 
 # Installation Steps
