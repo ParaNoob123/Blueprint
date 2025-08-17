@@ -1,0 +1,99 @@
+#!/bin/bash
+# 🚀 Unattended Pterodactyl Installer (asks only FQDN)
+# Made by Joy
+
+read -p "Enter your domain (FQDN, e.g. panel.htpanel.dpdns.org): " DOMAIN
+
+EMAIL="admin@$DOMAIN"
+DB_PASSWORD=$(openssl rand -hex 16)
+TIMEZONE="UTC"
+
+echo "📦 Installing Pterodactyl Panel for $DOMAIN..."
+
+# Install deps
+apt update -y && apt install -y curl docker.io docker-compose unzip
+
+# Setup dirs
+mkdir -p /srv/pterodactyl/{database,var,nginx,certs,logs}
+cd /srv/pterodactyl || exit
+
+# Write docker-compose.yml
+cat <<EOF > docker-compose.yml
+version: '3.8'
+
+services:
+  database:
+    image: mariadb:10.5
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - "./database:/var/lib/mysql"
+    environment:
+      MYSQL_DATABASE: panel
+      MYSQL_USER: pterodactyl
+      MYSQL_PASSWORD: $DB_PASSWORD
+      MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+
+  cache:
+    image: redis:alpine
+    restart: always
+
+  panel:
+    image: ghcr.io/pterodactyl/panel:latest
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - database
+      - cache
+    volumes:
+      - "./var:/app/var/"
+      - "./nginx:/etc/nginx/http.d/"
+      - "./certs:/etc/letsencrypt/"
+      - "./logs:/app/storage/logs"
+    environment:
+      APP_URL: "https://$DOMAIN"
+      APP_TIMEZONE: "$TIMEZONE"
+      APP_SERVICE_AUTHOR: "$EMAIL"
+      TRUSTED_PROXIES: "*"
+      MAIL_FROM: "$EMAIL"
+      MAIL_DRIVER: "smtp"
+      MAIL_HOST: "mail"
+      MAIL_PORT: "1025"
+      MAIL_USERNAME: ""
+      MAIL_PASSWORD: ""
+      MAIL_ENCRYPTION: "true"
+      DB_PASSWORD: "$DB_PASSWORD"
+      APP_ENV: "production"
+      APP_ENVIRONMENT_ONLY: "false"
+      CACHE_DRIVER: "redis"
+      SESSION_DRIVER: "redis"
+      QUEUE_DRIVER: "redis"
+      REDIS_HOST: "cache"
+      DB_HOST: "database"
+      DB_PORT: "3306"
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+EOF
+
+# Start containers
+docker-compose up -d
+
+# Run migrations + admin creation
+docker-compose run --rm panel php artisan migrate --force
+docker-compose run --rm panel php artisan p:user:make \
+  --email=$EMAIL \
+  --username=admin \
+  --name-first=Joy \
+  --name-last=Admin \
+  --password=Admin123 \
+  --admin=1
+
+echo "✅ Done!"
+echo "🌍 Visit: https://$DOMAIN"
+echo "👤 Login: admin ($EMAIL)"
+echo "🔑 Password: Admin123"
