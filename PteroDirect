@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# ============================================
+#   Pterodactyl One-Click Installer by Para
+# ============================================
+
+echo -e "\n\033[1;36m"
+cat << "EOF"
+
+  _____        _____            
+ |  __ \ /\   |  __ \     /\    
+ | |__) /  \  | |__) |   /  \   
+ |  ___/ /\ \ |  _  /   / /\ \  
+ | |  / ____ \| | \ \  / ____ \ 
+ |_| /_/    \_\_|  \_\/_/    \_\
+                                
+
+   🤍 One Click Pterodactyl Installer
+
+EOF
+echo -e "\033[0m"
+
+# Ask for FQDN
+read -p "Enter your FQDN (example: panel.example.com): " FQDN
+
+# Feed answers like commands
+(
+  echo "2"                  # Select option 2
+  echo "Para"               # Panel name
+  echo "Para"               # First name
+  echo "Para"               # Last name
+  echo "Asia/Kolkata"       # Timezone
+  echo "admin@gmail.com"    # Admin email
+  echo "admin@gmail.com"    # Admin email confirm
+  echo "admin"              # Username
+  echo "admin"              # Password
+  echo "admin"              # Password confirm
+  echo "$FQDN"              # Domain/FQDN
+  echo "y"                  # Confirm installation
+) | bash <(curl -s https://pterodactyl-installer.se)
+
+
+# Completion
+echo -e "\n\033[1;32m-------------------------------------\033[0m"
+echo -e "\033[1;32m Installation Finished! 🎉\033[0m"
+echo -e "\033[1;35m Panel: $FQDN\033[0m"
+echo -e "\033[1;35m Admin Login: admin@gmail.com / admin\033[0m"
+echo -e "\033[1;32m-------------------------------------\033[0m"
