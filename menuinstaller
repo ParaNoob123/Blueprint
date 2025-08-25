@@ -1,0 +1,114 @@
+#!/bin/bash
+
+# Colors
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+# Function for Panel Sub-Menu
+panel_menu() {
+    while true; do
+        clear
+        echo -e "${YELLOW}=========================${NC}"
+        echo -e "${GREEN}       Panel Menu        ${NC}"
+        echo -e "${YELLOW}=========================${NC}"
+        echo -e "${CYAN}1) Tryex Panel${NC}"
+        echo -e "${CYAN}2) Tryex Wings${NC}"
+        echo -e "${CYAN}3) Puffer Panel${NC}"
+        echo -e "${CYAN}4) Oversee Panel${NC}"
+        echo -e "${CYAN}5) Oversee Wings${NC}"
+        echo -e "${CYAN}6) Skyport Panel${NC}"
+        echo -e "${CYAN}7) Skyport Wings${NC}"
+        echo -e "${CYAN}8) Exit to Main Menu${NC}"
+        echo -e "${YELLOW}=========================${NC}"
+        echo -e -n "${YELLOW}Enter your choice [1-8]: ${NC}"
+        read panel_choice
+
+        case $panel_choice in
+            1)
+                echo -e "${GREEN}Installing Tryex Panel...${NC}"
+                bash <(curl -s https://raw.githubusercontent.com/ParaNoob123/Blueprint/refs/heads/main/teryxv4)
+                read -p "Press enter to return..."
+                ;;
+            2)
+                echo -e "${GREEN}Installing Tryex Wings...${NC}"
+                bash <(curl -s https://raw.githubusercontent.com/ParaNoob123/Blueprint/refs/heads/main/teryxwings)
+                read -p "Press enter to return..."
+                ;;
+            3)
+                echo -e "${GREEN}Installing Puffer Panel...${NC}"
+                bash <(curl -s https://raw.githubusercontent.com/ParaNoob123/Blueprint/refs/heads/main/pufferinstall)
+                read -p "Press enter to return..."
+                ;;
+            4)
+                echo -e "${GREEN}Installing Oversee Panel...${NC}"
+                bash <(curl -s https://raw.githubusercontent.com/ParaNoob123/Blueprint/refs/heads/main/overseeinstall)
+                read -p "Press enter to return..."
+                ;;
+            5)
+                echo -e "${GREEN}Installing Oversee Wings...${NC}"
+                bash <(curl -s https://raw.githubusercontent.com/ParaNoob123/Blueprint/refs/heads/main/teryxwings)
+                read -p "Press enter to return..."
+                ;;
+            6)
+                echo -e "${GREEN}Installing Skyport Panel...${NC}"
+                bash <(curl -s https://raw.githubusercontent.com/ParaNoob123/Blueprint/refs/heads/main/skyport)
+                read -p "Press enter to return..."
+                ;;
+            7)
+                echo -e "${GREEN}Installing Skyport Wings...${NC}"
+                bash <(curl -s https://raw.githubusercontent.com/ParaNoob123/Blueprint/refs/heads/main/skyportwings)
+                read -p "Press enter to return..."
+                ;;
+            8)
+                echo -e "${GREEN}Returning to Main Menu...${NC}"
+                sleep 1
+                break
+                ;;
+            *)
+                echo -e "${YELLOW}Invalid option, try again.${NC}"
+                sleep 1
+                ;;
+        esac
+    done
+}
+
+# Main Menu
+while true; do
+    clear
+    echo -e "${YELLOW}=========================${NC}"
+    echo -e "${GREEN}     Unlimate Menu        ${NC}"
+    echo -e "${YELLOW}=========================${NC}"
+    echo -e "${CYAN}1) Create Panel${NC}"
+    echo -e "${CYAN}2) Create 24/7${NC}"
+    echo -e "${CYAN}3) Playit Tunneling${NC}"
+    echo -e "${CYAN}4) Exit${NC}"
+    echo -e "${YELLOW}=========================${NC}"
+    echo -e -n "${YELLOW}Enter your choice [1-4]: ${NC}"
+    read choice
+
+    case $choice in
+        1)
+            panel_menu
+            ;;
+        2)
+            echo -e "${GREEN}Setting up 24/7 service...${NC}"
+            python3 <(curl -s https://raw.githubusercontent.com/ParaNoob123/Blueprint/refs/heads/main/24%5C7)
+            read -p "Press enter to return..."
+            ;;
+        3)
+            echo -e "${GREEN}Setting up Playit Tunneling...${NC}"
+            bash <(curl -s https://raw.githubusercontent.com/ParaNoob123/Blueprint/refs/heads/main/playit)
+            read -p "Press enter to return..."
+            ;;
+        4)
+            echo -e "${GREEN}Goodbye!${NC}"
+            exit 0
+            ;;
+        *)
+            echo -e "${YELLOW}Invalid option, try again.${NC}"
+            sleep 1
+            ;;
+    esac
+done
