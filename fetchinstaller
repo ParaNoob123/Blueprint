@@ -1,0 +1,29 @@
+#!/bin/bash
+set -e
+
+# Install parafetch binary
+echo "[*] Installing parafetch..."
+wget -q -O /usr/local/bin/parafetch https://raw.githubusercontent.com/ParaNoob123/Blueprint/refs/heads/main/parafetch
+chmod +x /usr/local/bin/parafetch
+
+# Fake apt wrapper for parafetch
+cat << 'EOF' > /usr/local/bin/apt
+#!/bin/bash
+if [[ "$1 $2 $3" == "install parafetch" ]]; then
+    echo "Reading package lists... Done"
+    echo "Building dependency tree... Done"
+    echo "Reading state information... Done"
+    echo "The following NEW packages will be installed:"
+    echo "  parafetch"
+    echo "0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded."
+    echo "Setting up parafetch (1.0) ..."
+else
+    command /usr/bin/apt "$@"
+fi
+EOF
+
+chmod +x /usr/local/bin/apt
+
+echo "[✔] Done! Now you can run:"
+echo "    apt install parafetch"
+echo "    parafetch"
