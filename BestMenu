@@ -1,0 +1,73 @@
+#!/bin/bash
+
+# ========= Colors =========
+RED="\e[31m"; GREEN="\e[32m"; YELLOW="\e[33m"
+CYAN="\e[36m"; WHITE="\e[37m"; RESET="\e[0m"; BOLD="\e[1m"
+
+# ========= Utils =========
+check_curl() {
+    if ! command -v curl &>/dev/null; then
+        echo -e "${RED}${BOLD}curl not installed. Installing...${RESET}"
+        apt update && apt install -y curl
+    fi
+}
+
+pause() { read -p "Press Enter to continue..."; }
+
+system_info() {
+    clear
+    echo -e "${BOLD}SYSTEM INFORMATION${RESET}"
+    echo "Hostname: $(hostname)"
+    echo "User: $(whoami)"
+    echo "Directory: $(pwd)"
+    echo "System: $(uname -srm)"
+    echo "Uptime: $(uptime -p)"
+    echo "Memory: $(free -h | awk '/Mem:/ {print $3"/"$2}')"
+    echo "Disk: $(df -h / | awk 'NR==2 {print $3"/"$2 " ("$5")"}')"
+    pause
+}
+
+run_remote_script() {
+    local url=$1
+    local temp_script=$(mktemp)
+    check_curl
+    if curl -fsSL "$url" -o "$temp_script"; then
+        chmod +x "$temp_script"
+        bash "$temp_script"
+        rm -f "$temp_script"
+    else
+        echo -e "${RED}Failed to download: $url${RESET}"
+    fi
+    pause
+}
+
+# ========= Menu =========
+show_menu() {
+    clear
+    cat <<EOF
+${BOLD}========== MAIN MENU ==========${RESET}
+${BOLD}1.${RESET} Install Panel (PteroMenu)
+${BOLD}2.${RESET} Install Wings (wingsptero)
+${BOLD}3.${RESET} Update Panel (PteroUpdate)
+${BOLD}4.${RESET} Uninstall Panel (UninstallPtero)
+${BOLD}5.${RESET} System Info
+${BOLD}6.${RESET} Exit
+${BOLD}===============================${RESET}
+EOF
+    echo -ne "${BOLD}Enter your choice [1-6]: ${RESET}"
+}
+
+# ========= Main =========
+while true; do
+    show_menu
+    read -r choice
+    case $choice in
+        1) run_remote_script "https://raw.githubusercontent.com/ParaNoob123/Blueprint/refs/heads/main/PteroMenu" ;;
+        2) run_remote_script "https://raw.githubusercontent.com/ParaNoob123/Blueprint/refs/heads/main/wingsptero" ;;
+        3) run_remote_script "https://raw.githubusercontent.com/ParaNoob123/Blueprint/refs/heads/main/PteroUpdate" ;;
+        4) run_remote_script "https://raw.githubusercontent.com/ParaNoob123/Blueprint/refs/heads/main/UninstallPtero" ;;
+        5) system_info ;;
+        6) echo "Exiting..."; exit 0 ;;
+        *) echo -e "${RED}Invalid option!${RESET}"; pause ;;
+    esac
+done
