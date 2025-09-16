@@ -13,7 +13,8 @@ while true; do
     echo -e "${YELLOW}=========================${NC}"
     echo -e "${CYAN}1) Install Ubuntu 22${NC}"
     echo -e "${CYAN}2) Install Debian 12${NC}"
-    echo -e "${CYAN}3) Exit${NC}"
+    echo -e "${CYAN}3) Install CentOs-Steam-9${NC}"
+    echo -e "${CYAN}4) Exit${NC}"
     echo -e "${YELLOW}=========================${NC}"
     echo -e -n "${YELLOW}Enter your choice [1-3]: ${NC}"
     read choice
@@ -30,6 +31,11 @@ while true; do
             read -p "Press enter to return to menu..."
             ;;
         3)
+            echo -e "${GREEN}Running Debian 12 install script...${NC}"
+            bash <(curl -s https://raw.githubusercontent.com/ParaNoob123/Blueprint/refs/heads/main/CentOs9Install)
+            read -p "Press enter to return to menu..."
+            ;;
+        4)
             echo -e "${GREEN}Goodbye!${NC}"
             exit 0
             ;;
