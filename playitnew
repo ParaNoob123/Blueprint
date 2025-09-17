@@ -14,12 +14,12 @@ cat << "EOF"
                                 
                                 
 
- 🤍 Framework Installer - github.com/ParaNoob123
+ 🤍 Playit Installer - github.com/ParaNoob123
 
 EOF
 echo -e "\033[0m"
 
-echo -e "\033[1;34mStarting Installation of Blueprint.zip\033[0m"
+echo -e "\033[1;34mStarting Installation of Playit\033[0m"
 echo "-------------------------------------"
 
 # Installation Steps
@@ -46,7 +46,7 @@ done
 
 # Completion Message
 echo -e "\n\033[1;32m-------------------------------------\033[0m"
-echo -e "\033[1;32mBlueprint extensions installed successfully! 🎉\033[0m"
+echo -e "\033[1;32m Playit Has installed successfully! 🎉\033[0m"
 echo -e "\033[1;35m           Made by Para\033[0m"
 echo -e "\033[1;35m       github.com/Para\033[0m"
 echo -e "\033[1;32m-------------------------------------\033[0m"
