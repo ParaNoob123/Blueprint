@@ -1,0 +1,17 @@
+# 1. Update system
+apt update -y && apt upgrade -y
+
+# 2. Add Proxmox repository
+echo "deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription" | tee /etc/apt/sources.list.d/pve-install-repo.list
+
+# 3. Add repository key
+wget https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg -O /etc/apt/trusted.gpg.d/proxmox-release-bookworm.gpg
+
+# 4. Update repo list
+apt update
+
+# 5. Install Proxmox kernel and tools
+apt install -y pve-kernel-6.8 pve-headers pve-manager qemu-server libpve-storage-perl pve-qemu-kvm pve-container lxcfs lxc-pve
+
+# 6. Enable services
+systemctl enable pvedaemon pve-cluster pve-storage pvestatd --now
