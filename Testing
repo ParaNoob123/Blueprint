@@ -1,0 +1,74 @@
+#!/bin/bash
+
+# === Configuration ===
+REMOTE_HOST="YOUR_VPS_IP"       # Put your VPS IPv4 here
+REMOTE_USER="tunneluser"        # VPS user
+SSH_PORT=22                     # SSH port of your VPS
+
+# === Colors & Emojis ===
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+EMOJI_SUCCESS="✅"
+EMOJI_ERROR="❌"
+EMOJI_TUNNEL="🚇"
+EMOJI_STOP="🛑"
+EMOJI_LIST="📋"
+
+usage() {
+    echo -e "${BLUE}Tunnelsmith - Your Own VPS Tunnel${NC}"
+    echo -e "Usage:"
+    echo -e "  $0 make <local_port>    ${EMOJI_TUNNEL} Create a tunnel"
+    echo -e "  $0 list                 ${EMOJI_LIST} List active tunnels"
+    echo -e "  $0 kill <pid>           ${EMOJI_STOP} Kill a tunnel by PID"
+    echo -e "  $0 killall              ${EMOJI_STOP} Kill all tunnels"
+    echo -e "  $0 help                 Show this help"
+}
+
+case "$1" in
+    make)
+        LOCAL_PORT=$2
+        if [[ -z "$LOCAL_PORT" || ! "$LOCAL_PORT" =~ ^[0-9]+$ ]]; then
+            echo -e "${EMOJI_ERROR} Provide a valid local port"
+            exit 1
+        fi
+
+        REMOTE_PORT=$((RANDOM % 55535 + 10000))
+        echo -e "${EMOJI_TUNNEL} Forwarding localhost:${LOCAL_PORT} -> ${REMOTE_HOST}:${REMOTE_PORT}"
+
+        nohup ssh -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes \
+            -N -R ${REMOTE_PORT}:localhost:${LOCAL_PORT} \
+            ${REMOTE_USER}@${REMOTE_HOST} -p ${SSH_PORT} &> /tmp/tunnel_${REMOTE_PORT}.log &
+
+        PID=$!
+        sleep 2
+        if ps -p $PID > /dev/null; then
+            echo -e "${EMOJI_SUCCESS} Tunnel active! PID: ${PID}, Remote Port: ${REMOTE_PORT}"
+        else
+            echo -e "${EMOJI_ERROR} Tunnel failed. Check log: /tmp/tunnel_${REMOTE_PORT}.log"
+        fi
+        ;;
+    list)
+        echo -e "${EMOJI_LIST} Active tunnels:"
+        pgrep -af "ssh.*-R.*${REMOTE_HOST}" || echo "None found"
+        ;;
+    kill)
+        PID=$2
+        if [[ -z "$PID" ]]; then echo "Provide PID"; exit 1; fi
+        kill $PID && echo -e "${EMOJI_STOP} Tunnel $PID killed"
+        ;;
+    killall)
+        PIDS=$(pgrep -f "ssh.*-R.*${REMOTE_HOST}")
+        if [[ -n "$PIDS" ]]; then
+            echo "$PIDS" | xargs kill
+            echo -e "${EMOJI_STOP} All tunnels killed"
+        else
+            echo "No tunnels to kill"
+        fi
+        ;;
+    help|*)
+        usage
+        ;;
+esac
